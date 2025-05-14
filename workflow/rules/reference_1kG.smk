@@ -57,7 +57,8 @@ def vcf_remote(wc):
 
 
 rule download_tg_chrom:
-    input: unpack(vcf_remote)
+    input: 
+        unpack(vcf_remote)
     output:
         vcf = temp("reference/1000gRaw.{gbuild}.chr{chrom}.vcf.gz"),
         tbi = temp("reference/1000gRaw.{gbuild}.chr{chrom}.vcf.gz.tbi")

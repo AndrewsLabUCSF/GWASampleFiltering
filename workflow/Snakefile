@@ -13,6 +13,65 @@ config['relatedness_preexclude'] = 'relatedness_preexclude' in config and config
 
 shell.executable("/bin/bash")
 
+
+from urllib.request import urlopen
+from urllib.error import URLError
+
+
+try:
+    response = urlopen('http://www.google.com', timeout=10)
+    iconnect = True
+except URLError as err:
+    iconnect = False
+
+iconnect = iconnect and not ('nointernet' in config and config['nointernet'])
+
+class BaseProvider:
+    @staticmethod
+    def check_url(string_, protocols):
+        if not any(string_.startswith(protocol) for protocol in protocols):
+            return protocols[0] + string_
+        return string_
+    
+    @staticmethod
+    def remote(**kwargs):
+        raise NotImplementedError("Remote provider not implemented.")
+    
+# Dummy storage provider for offline mode
+class dummyprovider(BaseProvider):
+    @staticmethod
+    def remote(string_, **kwargs):
+        """Strip known protocols and return a plain string."""
+        for prefix in ["http://", "https://", "ftp://", "ftps://"]:
+            if string_.startswith(prefix):
+                return string_[len(prefix):]  # Remove the prefix
+        return string_
+
+if iconnect:
+    class FTP:
+        @staticmethod
+        def remote(string_, **kwargs):
+            if not string_.startswith("ftp://") and not string_.startswith("ftps://"):
+                string_ = "ftp://" + string_
+            return storage.ftp(string_)
+    class HTTP:
+        @staticmethod
+        def remote(string_, **kwargs):
+            if not string_.startswith("http://") and not string_.startswith("https://"):
+                string_ = "https://" + string_
+            return storage.http(string_)
+else:
+    FTP = dummyprovider
+    HTTP = dummyprovider
+    class storage:
+        @staticmethod
+        def ftp(string_, *args, **kwargs):
+            return FTP.remote(string_, *args, **kwargs)
+        @staticmethod
+        def http(string_, *args, **kwargs):
+            return HTTP.remote(string_, *args, **kwargs)
+### End of provider definitions
+
 BPLINK = ["bed", "bim", "fam"]
 RWD = os.getcwd()
 

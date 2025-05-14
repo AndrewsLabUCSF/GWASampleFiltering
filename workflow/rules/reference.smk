@@ -5,6 +5,7 @@
 from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
+import urllib
 from urllib.request import urlopen
 from urllib.error import URLError
 

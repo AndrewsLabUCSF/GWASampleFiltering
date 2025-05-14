@@ -27,7 +27,8 @@ sample: false
 SexIn:
 
 # This is the directory with the input files:
-DataIn: /sc/arion/projects/LOAD/Data/BioME/sample_QC/GWASampleFiltering/input
+#DataIn: /sc/arion/projects/LOAD/Data/BioME/sample_QC/GWASampleFiltering/input
+DataIn: /wynton/group/andrews/users/rakshyasharma/habs-hd/habshd/Data
 
 # This is the directory with the output files:
 DataOut: output

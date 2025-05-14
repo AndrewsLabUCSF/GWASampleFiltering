@@ -312,9 +312,10 @@ rule Merge_RefenceSample:
         extra = apply_prefix("{dataout}/eref.{sample}pruned.vcf.gz") if extraref else ''
     output:
         out = "{dataout}/{sample}_{refname}_merged.vcf"
-    threads: 4
+    threads: 8
     resources:
-        mem_mb = 4000,
+        mem_mb = 8000,
+        disk_mb=32000,
         walltime = '4:00'
     container: "docker://befh/bcftools-htslib-samtools:1.15"
     shell:
